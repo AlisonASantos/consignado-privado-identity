@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\ConsignadoPrivado.Identity.Application\ConsignadoPrivado.Identity.Application.csproj" />
+    <ProjectReference Include="..\ConsignadoPrivado.Identity.ORM\ConsignadoPrivado.Identity.ORM.csproj" />
+    <ProjectReference Include="..\ConsignadoPrivado.Identity.Domain\ConsignadoPrivado.Identity.Domain.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+</Project>
