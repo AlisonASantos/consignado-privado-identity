@@ -37,8 +37,6 @@ namespace ConsignadoPrivado.Common.Security
                 };
             });
 
-            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-
             return services;
         }
     }
