@@ -1,8 +1,9 @@
-using ConsignadoPrivado.Common;
-using ConsignadoPrivado.Identity.Application.AuthenticateUser;
-using ConsignadoPrivado.Identity.WebApi.Common;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using ConsignadoPrivado.Identity.WebApi.Common;
+using ConsignadoPrivado.Identity.WebApi.Features.Auth.AuthenticateUserFeature;
+using ConsignadoPrivado.Identity.Application.AuthenticateUser;
 
 namespace ConsignadoPrivado.Identity.WebApi.Features.Auth;
 
@@ -11,18 +12,34 @@ namespace ConsignadoPrivado.Identity.WebApi.Features.Auth;
 public class AuthController : BaseController
 {
     private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
 
-    public AuthController(IMediator mediator)
+    public AuthController(IMediator mediator, IMapper mapper)
     {
         _mediator = mediator;
+        _mapper = mapper;
     }
 
-    [HttpPost("login")]
-    [ProducesResponseType(typeof(ApiResponseWithData<AuthenticateUserResult>), StatusCodes.Status200OK)]
+    [HttpPost]
+    [ProducesResponseType(typeof(ApiResponseWithData<AuthenticateUserResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Login([FromBody] AuthenticateUserCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserRequest request, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(command, cancellationToken);
-        return OkResponse(result);
+        var validator = new AuthenticateUserRequestValidator();
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+        if (!validationResult.IsValid)
+            return BadRequest(validationResult.Errors);
+
+        var command = _mapper.Map<AuthenticateUserCommand>(request);
+        var response = await _mediator.Send(command, cancellationToken);
+
+        return Ok(new ApiResponseWithData<AuthenticateUserResponse>
+        {
+            Success = true,
+            Message = "User authenticated successfully",
+            Data = _mapper.Map<AuthenticateUserResponse>(response)
+        });
     }
 }

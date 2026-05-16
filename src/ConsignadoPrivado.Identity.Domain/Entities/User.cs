@@ -1,11 +1,12 @@
 using ConsignadoPrivado.Common;
+using ConsignadoPrivado.Common.Security;
 using ConsignadoPrivado.Common.Validation;
 using ConsignadoPrivado.Identity.Domain.Enums;
 using ConsignadoPrivado.Identity.Domain.Validation;
 
 namespace ConsignadoPrivado.Identity.Domain.Entities;
 
-public class User : BaseEntity
+public class User : BaseEntity, IUser
 {
     public string FullName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
@@ -18,6 +19,11 @@ public class User : BaseEntity
     public DateTime? LockedUntil { get; set; }
     public string? RefreshToken { get; set; }
     public DateTime? RefreshTokenExpiresAt { get; set; }
+
+    // IUser implementation
+    string IUser.Id => Id.ToString();
+    string IUser.Username => FullName;
+    string IUser.Role => Role.ToString();
 
     public User()
     {

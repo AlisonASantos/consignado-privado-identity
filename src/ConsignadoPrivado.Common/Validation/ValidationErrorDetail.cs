@@ -4,15 +4,15 @@ namespace ConsignadoPrivado.Common.Validation;
 
 public class ValidationErrorDetail
 {
-    public string PropertyName { get; set; } = string.Empty;
-    public string ErrorMessage { get; set; } = string.Empty;
+    public string Error { get; init; } = string.Empty;
+    public string Detail { get; init; } = string.Empty;
 
-    public static explicit operator ValidationErrorDetail(ValidationFailure failure)
+    public static explicit operator ValidationErrorDetail(ValidationFailure validationFailure)
     {
         return new ValidationErrorDetail
         {
-            PropertyName = failure.PropertyName,
-            ErrorMessage = failure.ErrorMessage
+            Detail = validationFailure.ErrorMessage,
+            Error = validationFailure.ErrorCode
         };
     }
 }
